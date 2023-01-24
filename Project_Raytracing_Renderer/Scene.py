@@ -20,8 +20,7 @@ class Scene:
         return self
 
     def render(self) -> Image:
-        for sphere in self.objects:
-            return self.camera.render(self.objects)
+        return self.camera.render(self.objects)
 
 
 if __name__ == '__main__':
@@ -35,5 +34,12 @@ if __name__ == '__main__':
                                                                           255, 0)),
                                                          Sphere(Vector(0, -1, -3),
                                                                 1.5, Vector(0,
-                                                                            0, 255))
+                                                                            0, 255)),
+                                                         Sphere(Vector(1.25, 0.6, -1.3),
+                                                                0.4, Vector(0,
+                                                                            0, 0)),
+                                                         Sphere(Vector(3.5, 0, -2),
+                                                                2, Vector(255,
+                                                                          255, 255))
+
                                                          ]).render().save_image('test.ppm')
