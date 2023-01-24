@@ -2,6 +2,7 @@ from __future__ import annotations
 
 
 import math
+import numpy as np
 
 
 class Vector:
@@ -21,19 +22,19 @@ class Vector:
         return None
 
     def __mul__(self, other: Vector | int | float) -> Vector | float | None:
-        if type(other) is int or float:
+        if type(other) is int or type(other) is float:
             return Vector(self.x * other, self.y * other, self.z * other)
         elif type(other) is Vector:
             return self.x * other.x + self.y * other.y + self.z * other.z
         return None
 
     def __truediv__(self, other: int | float) -> Vector | None:
-        if type(other) is int or float:
+        if type(other) is int or type(other) is float:
             return Vector(self.x / other, self.y / other, self.z / other)
         return None
 
     def __floordiv__(self, other: int | float) -> Vector | None:
-        if type(other) is int or float:
+        if type(other) is int or type(other) is float:
             return Vector(self.x // other, self.y // other, self.z // other)
         return None
 
@@ -42,6 +43,13 @@ class Vector:
 
     def normalize(self) -> Vector:
         return Vector(self.x / self.length(), self.y / self.length(), self.z / self.length())
+
+    def to_array(self) -> np.ndarray:
+        return np.asarray([self.x, self.y, self.z], dtype=np.uint8)
+
+    @classmethod
+    def from_array(cls, array: np.ndarray) -> Vector:
+        return Vector(array[0], array[1], array[2])
 
     @staticmethod
     def cross_product(vector1: Vector, vector2: Vector) -> Vector:

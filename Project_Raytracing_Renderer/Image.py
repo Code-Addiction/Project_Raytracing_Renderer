@@ -32,8 +32,11 @@ class Image:
         with open(path, mode='w+') as f:
             f.write(image_str)
 
-    def update(self, i: int, j: int, color: Vector) -> None:
-        self._matrix[i][j] = color
+    def update(self, i: int, j: int, color: Vector, overwrite: bool = True) -> None:
+        if overwrite:
+            self._matrix[i][j] = color
+        else:
+            self._matrix[i][j] += color
 
     def __str__(self) -> str:
         return str(self._matrix)
