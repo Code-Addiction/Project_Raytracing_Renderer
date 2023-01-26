@@ -26,20 +26,20 @@ class Scene:
 if __name__ == '__main__':
     Scene(Camera(Vector(0, 0, 0),
                  1, 16 / 9,
-                 3.555555555555555555555555555556)).add([Sphere(Vector(1, 1, -2),
-                                                                1, Vector(255,
-                                                                          0, 0)),
-                                                         Sphere(Vector(-2, 0, -4),
-                                                                2, Vector(0,
-                                                                          255, 0)),
-                                                         Sphere(Vector(0, -1, -3),
-                                                                1.5, Vector(0,
-                                                                            0, 255)),
-                                                         Sphere(Vector(1.25, 0.6, -1.3),
-                                                                0.4, Vector(0,
-                                                                            0, 0)),
-                                                         Sphere(Vector(3.5, 0, -2),
-                                                                2, Vector(255,
-                                                                          255, 255))
+                 3.555555555555555555555555555556, 1)).add([Sphere(Vector(1, 1, -2),
+                                                                   1, Vector(255,
+                                                                             0, 0)),
+                                                            Sphere(Vector(-2, 0, -4),
+                                                                   2, Vector(0,
+                                                                             255, 0)),
+                                                            Sphere(Vector(0, -1, -3),
+                                                                   1.5, Vector(0,
+                                                                               0, 255)),
+                                                            Sphere(Vector(1.25, 0.6, -1.3),
+                                                                   0.4, Vector(0,
+                                                                               0, 0)),
+                                                            Sphere(Vector(3.5, 0, -2),
+                                                                   2, Vector(255,
+                                                                             255, 255))
 
-                                                         ]).render().save_image('test.ppm')
+                                                            ]).render().save_image('test.ppm')
