@@ -23,7 +23,7 @@ class Camera:
         self.samples_per_pixel = samples_per_pixel
 
     def render(self, objects: list):
-        width = 1920
+        width = 400
         height = int(width // self.aspect_ratio)
         image = Image(width, height)
         for j in range(height)[::-1]:
