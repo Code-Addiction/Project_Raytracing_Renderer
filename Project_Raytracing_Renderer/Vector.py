@@ -61,5 +61,10 @@ class Vector:
     def to_tuple(self) -> tuple[float, float, float]:
         return self.x, self.y, self.z
 
+    def modulate(self, other: Vector) -> Vector:
+        return Vector(self.x * other.x / 255,
+                      self.y * other.y / 255,
+                      self.z * other.z / 255)
+
     def __str__(self) -> str:
         return f'({self.x}, {self.y}, {self.z})'

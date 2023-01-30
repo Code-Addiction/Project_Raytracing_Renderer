@@ -4,6 +4,7 @@ from Project_Raytracing_Renderer.Camera import Camera
 from Project_Raytracing_Renderer.Sphere import Sphere
 from Project_Raytracing_Renderer.Image import Image
 from Project_Raytracing_Renderer.Vector import Vector
+from Project_Raytracing_Renderer.Diffuse import Diffuse
 
 
 class Scene:
@@ -26,20 +27,19 @@ class Scene:
 if __name__ == '__main__':
     Scene(Camera(Vector(0, 0, 0),
                  1, 16 / 9,
-                 3.555555555555555555555555555556, 1)).add([Sphere(Vector(1, 1, -2),
-                                                                   1, Vector(255,
-                                                                             0, 0)),
+                 3.555555555555555555555555555556, 4)).add([Sphere(Vector(1, 1, -2),
+                                                                   1, Diffuse(Vector(255,
+                                                                                     0, 0))),
                                                             Sphere(Vector(-2, 0, -4),
-                                                                   2, Vector(0,
-                                                                             255, 0)),
+                                                                   2, Diffuse(Vector(0,
+                                                                                     255, 0))),
                                                             Sphere(Vector(0, -1, -3),
-                                                                   1.5, Vector(0,
-                                                                               0, 255)),
+                                                                   1.5, Diffuse(Vector(0,
+                                                                                       0, 255))),
                                                             Sphere(Vector(1.25, 0.6, -1.3),
-                                                                   0.4, Vector(0,
-                                                                               0, 0)),
+                                                                   0.4, Diffuse(Vector(0,
+                                                                                       0, 0))),
                                                             Sphere(Vector(3.5, 0, -2),
-                                                                   2, Vector(255,
-                                                                             255, 255))
-
+                                                                   2, Diffuse(Vector(255,
+                                                                                     255, 255)))
                                                             ]).render().save_image('test.ppm')

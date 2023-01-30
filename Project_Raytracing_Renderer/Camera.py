@@ -30,12 +30,13 @@ class Camera:
             for i in range(width):
                 final_color = Vector(0, 0, 0)
                 for _ in range(self.samples_per_pixel):
-                    _, set_color, set_t = Camera.get_color(self.get_ray(i / (width - 1), j / (height - 1)), None)
+                    _, set_color, set_t = Camera.get_color(self.get_ray(i / (width - 1), j / (height - 1)), None, 1)
                     u = (i + np.random.uniform()) / (width - 1)
                     v = (j + np.random.uniform()) / (height - 1)
                     for sphere in objects:
                         hit, color, t = Camera.get_color(
-                            self.get_ray(u, v), sphere)
+                            self.get_ray(u, v), sphere,
+                            4)  # max_depth
                         if hit and t < set_t:
                             set_t = t
                             set_color = color
@@ -47,12 +48,17 @@ class Camera:
         return Ray(self.origin, self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin)
 
     @staticmethod
-    def get_color(ray: Ray, sphere: Sphere | None) -> tuple[bool, Vector, float]:
+    def get_color(ray: Ray, sphere: Sphere | None, max_depth: int) -> tuple[bool, Vector, float]:
+        if max_depth < 1:
+            return False, Vector(0, 0, 0), float('inf')
+
         if sphere is not None:
             result = sphere.hits(ray)
             if result is not None:
-                _, _, color, t = result
-                return True, color, t
+                intersection_point, normal_vector, material, t = result
+                direction, material_color = material.scatter(ray, intersection_point, normal_vector)
+                _, color, _ = Camera.get_color(Ray(intersection_point, direction), sphere, max_depth - 1)
+                return True, color.modulate(material_color) / 2, t
 
         unit_direction = ray.direction.normalize()
         t = 0.5 * (unit_direction.y + 1)

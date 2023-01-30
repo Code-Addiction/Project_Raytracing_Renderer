@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 from Project_Raytracing_Renderer.Vector import Vector
 

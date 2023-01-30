@@ -2,16 +2,17 @@ from __future__ import annotations
 
 from Project_Raytracing_Renderer.Vector import Vector
 from Project_Raytracing_Renderer.Ray import Ray
+from Project_Raytracing_Renderer.Material import Material
 import math
 
 
 class Sphere:
-    def __init__(self, origin: Vector, radius: float, color: Vector) -> None:
+    def __init__(self, origin: Vector, radius: float, material: Material) -> None:
         self.origin = origin
         self.radius = radius
-        self.color = color
+        self.material = material
 
-    def hits(self, ray: Ray) -> tuple[Vector, Vector, Vector, float] | None:
+    def hits(self, ray: Ray) -> tuple[Vector, Vector, Material, float] | None:
         oc = ray.origin - self.origin
         a = ray.direction * ray.direction
         b = 2.0 * (oc * ray.direction)
@@ -31,12 +32,5 @@ class Sphere:
             if t is not None:
                 intersection_point = ray.position(t)
                 normal_vector = (intersection_point - self.origin).normalize()
-                return intersection_point, normal_vector, self.color, t
+                return intersection_point, normal_vector, self.material, t
         return None
-
-
-if __name__ == '__main__':
-    point, normal, color = Sphere(Vector(0, 0, 0), 2, Vector(0, 0, 0)).hits(Ray(Vector(3, 0, 0), Vector(-1, 0, 0)))
-    print('Point:', point)
-    print('Normal:', normal)
-    print('Color:', color),
