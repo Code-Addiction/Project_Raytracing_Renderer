@@ -58,7 +58,7 @@ class Camera:
                 intersection_point, normal_vector, material, t = result
                 direction, material_color = material.scatter(ray, intersection_point, normal_vector)
                 _, color, _ = Camera.get_color(Ray(intersection_point, direction), sphere, max_depth - 1)
-                return True, color.modulate(material_color) / 2, t
+                return True, color.modulate(material_color), t
 
         unit_direction = ray.direction.normalize()
         t = 0.5 * (unit_direction.y + 1)
