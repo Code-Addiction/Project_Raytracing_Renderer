@@ -1,7 +1,5 @@
-import math
-
 import numpy as np
-from Project_Raytracing_Renderer.Vector import Vector
+from Project_Raytracing_Renderer.Rendering.Vector import Vector
 
 
 class Image:

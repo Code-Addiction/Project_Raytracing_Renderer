@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from Project_Raytracing_Renderer.Ray import Ray
-from Project_Raytracing_Renderer.Vector import Vector
-from Project_Raytracing_Renderer.Image import Image
-from Project_Raytracing_Renderer.Sphere import Sphere
+from Project_Raytracing_Renderer.Rendering.Ray import Ray
+from Project_Raytracing_Renderer.Rendering.Vector import Vector
+from Project_Raytracing_Renderer.Rendering.Image import Image
+from Project_Raytracing_Renderer.Objects.Sphere import Sphere
 import numpy as np
 
 

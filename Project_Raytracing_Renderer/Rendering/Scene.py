@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from Project_Raytracing_Renderer.Camera import Camera
-from Project_Raytracing_Renderer.Sphere import Sphere
-from Project_Raytracing_Renderer.Image import Image
-from Project_Raytracing_Renderer.Vector import Vector
-from Project_Raytracing_Renderer.Diffuse import Diffuse
+from Project_Raytracing_Renderer.Objects.Camera import Camera
+from Project_Raytracing_Renderer.Objects.Sphere import Sphere
+from Project_Raytracing_Renderer.Rendering.Image import Image
+from Project_Raytracing_Renderer.Rendering.Vector import Vector
+from Project_Raytracing_Renderer.Materials.Diffuse import Diffuse
 
 
 class Scene:

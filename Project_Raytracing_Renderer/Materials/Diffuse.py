@@ -1,6 +1,6 @@
-from Project_Raytracing_Renderer.Vector import Vector
-from Project_Raytracing_Renderer.Ray import Ray
-from Project_Raytracing_Renderer.Material import Material
+from Project_Raytracing_Renderer.Rendering.Vector import Vector
+from Project_Raytracing_Renderer.Rendering.Ray import Ray
+from Project_Raytracing_Renderer.Materials.Material import Material
 import random
 
 

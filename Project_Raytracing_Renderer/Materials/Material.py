@@ -1,5 +1,5 @@
-from Project_Raytracing_Renderer.Vector import Vector
-from Project_Raytracing_Renderer.Ray import Ray
+from Project_Raytracing_Renderer.Rendering.Vector import Vector
+from Project_Raytracing_Renderer.Rendering.Ray import Ray
 
 
 class Material:
