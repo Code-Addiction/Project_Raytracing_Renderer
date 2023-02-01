@@ -13,6 +13,8 @@ class Sphere:
         self.material = material
 
     def hits(self, ray: Ray) -> tuple[Vector, Vector, Material, float] | None:
+        if ray.direction == Vector(0, 0, 0):
+            return None
         oc = ray.origin - self.origin
         a = ray.direction * ray.direction
         b = 2.0 * (oc * ray.direction)

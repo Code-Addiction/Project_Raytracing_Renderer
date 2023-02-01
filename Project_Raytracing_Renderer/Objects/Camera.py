@@ -4,6 +4,7 @@ from Project_Raytracing_Renderer.Rendering.Ray import Ray
 from Project_Raytracing_Renderer.Rendering.Vector import Vector
 from Project_Raytracing_Renderer.Rendering.Image import Image
 from Project_Raytracing_Renderer.Objects.Sphere import Sphere
+from Project_Raytracing_Renderer.Materials.NoTexture import NoTexture
 import numpy as np
 
 
@@ -22,26 +23,38 @@ class Camera:
                                   self.vertical / 2 - Vector(0, 0, self.focal_length))
         self.samples_per_pixel = samples_per_pixel
 
-    def render(self, objects: list):
-        width = 400
+    def render(self, width: int, render_depth: int, objects: list):
         height = int(width // self.aspect_ratio)
         image = Image(width, height)
         for j in range(height)[::-1]:
             for i in range(width):
-                final_color = Vector(0, 0, 0)
-                for _ in range(self.samples_per_pixel):
-                    _, set_color, set_t = Camera.get_color(self.get_ray(i / (width - 1), j / (height - 1)), None, 1)
-                    u = (i + np.random.uniform()) / (width - 1)
-                    v = (j + np.random.uniform()) / (height - 1)
+                if self.samples_per_pixel == 1:
+                    u = i / (width - 1)
+                    v = j / (height - 1)
+                    _, set_color, set_t = Camera.get_color(self.get_ray(u, v), None, 1)
                     for sphere in objects:
                         hit, color, t = Camera.get_color(
                             self.get_ray(u, v), sphere,
-                            4)  # max_depth
+                            render_depth)
                         if hit and t < set_t:
                             set_t = t
                             set_color = color
-                    final_color = final_color + set_color
-                image.update(i, j, final_color / self.samples_per_pixel)
+                    image.update(i, j, set_color)
+                else:
+                    final_color = Vector(0, 0, 0)
+                    for _ in range(self.samples_per_pixel):
+                        _, set_color, set_t = Camera.get_color(self.get_ray(i / (width - 1), j / (height - 1)), None, 1)
+                        u = (i + np.random.uniform()) / (width - 1)
+                        v = (j + np.random.uniform()) / (height - 1)
+                        for sphere in objects:
+                            hit, color, t = Camera.get_color(
+                                self.get_ray(u, v), sphere,
+                                render_depth)
+                            if hit and t < set_t:
+                                set_t = t
+                                set_color = color
+                        final_color = final_color + set_color
+                    image.update(i, j, final_color / self.samples_per_pixel)
         return image
 
     def get_ray(self, s: float, t: float) -> Ray:
@@ -57,6 +70,8 @@ class Camera:
             if result is not None:
                 intersection_point, normal_vector, material, t = result
                 direction, material_color = material.scatter(ray, intersection_point, normal_vector)
+                if type(material) == NoTexture:
+                    return True, material_color, t
                 _, color, _ = Camera.get_color(Ray(intersection_point, direction), sphere, max_depth - 1)
                 return True, color.modulate(material_color), t
 

@@ -38,6 +38,9 @@ class Vector:
             return Vector(self.x // other, self.y // other, self.z // other)
         return None
 
+    def __eq__(self, other) -> bool:
+        return self.x == other.x and self.y == other.y and self.z == other.z
+
     def length(self) -> float:
         return math.sqrt(self.x**2 + self.y**2 + self.z**2)
 

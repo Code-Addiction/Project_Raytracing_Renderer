@@ -1,2 +1,0 @@
-from Project_Raytracing_Renderer.Objects.Camera import Camera
-from Project_Raytracing_Renderer.Objects.Sphere import Sphere

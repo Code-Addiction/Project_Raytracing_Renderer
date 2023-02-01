@@ -25,7 +25,7 @@ class Image:
 
     def save_image(self, path: str):
         image_str = f'P3\n{self._width} {self._height}\n255'
-        for j in range(self._height):
+        for j in range(self._height)[::-1]:
             for i in range(self._width):
                 red, green, blue = self._matrix[i][j].to_tuple()
                 image_str = image_str + f'\n{int(red)} {int(green)} {int(blue)}'

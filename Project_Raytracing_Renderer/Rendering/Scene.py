@@ -20,8 +20,8 @@ class Scene:
             self.objects.append(sphere)
         return self
 
-    def render(self) -> Image:
-        return self.camera.render(self.objects)
+    def render(self, width: int, render_depth: int) -> Image:
+        return self.camera.render(width, render_depth, self.objects)
 
 
 if __name__ == '__main__':
@@ -42,4 +42,4 @@ if __name__ == '__main__':
                                                             Sphere(Vector(3.5, 0, -2),
                                                                    2, Diffuse(Vector(255,
                                                                                      255, 255)))
-                                                            ]).render().save_image('test.ppm')
+                                                            ]).render(400, 4).save_image('test2.ppm')
