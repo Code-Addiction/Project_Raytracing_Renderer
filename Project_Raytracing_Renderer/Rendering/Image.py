@@ -1,5 +1,6 @@
 import numpy as np
 from Project_Raytracing_Renderer.Rendering.Vector import Vector
+import math
 
 
 class Image:
@@ -23,11 +24,15 @@ class Image:
                 array[i][j][2] = blue
         return array
 
-    def save_image(self, path: str):
+    def save_image(self, path: str, gamma_correct: bool = False):
         image_str = f'P3\n{self._width} {self._height}\n255'
         for j in range(self._height)[::-1]:
             for i in range(self._width):
                 red, green, blue = self._matrix[i][j].to_tuple()
+                if gamma_correct:
+                    red = math.sqrt(red / 255) * 255
+                    green = math.sqrt(green / 255) * 255
+                    blue = math.sqrt(blue / 255) * 255
                 image_str = image_str + f'\n{int(red)} {int(green)} {int(blue)}'
         with open(path, mode='w+') as f:
             f.write(image_str)

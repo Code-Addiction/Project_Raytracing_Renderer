@@ -69,5 +69,8 @@ class Vector:
                       self.y * other.y / 255,
                       self.z * other.z / 255)
 
+    def near_zero(self) -> bool:
+        return self.x < 0.00000001 and self.y < 0.00000001 and self.z < 0.00000001
+
     def __str__(self) -> str:
         return f'({self.x}, {self.y}, {self.z})'

@@ -12,27 +12,26 @@ class Sphere:
         self.radius = radius
         self.material = material
 
-    def hits(self, ray: Ray) -> tuple[Vector, Vector, Material, float] | None:
-        if ray.direction == Vector(0, 0, 0):
-            return None
+    def hits(self, ray: Ray, t_min: float, t_max: float) -> tuple[Vector, Vector, Material, float] | None:
         oc = ray.origin - self.origin
-        a = ray.direction * ray.direction
-        b = 2.0 * (oc * ray.direction)
-        c = (oc * oc) - self.radius**2
-        if b * b - 4 * a * c >= 0:
-            t_root = math.sqrt(((b / a) / 2)**2 - (c / a))
-            t_basis = -((b / a) / 2)
-            t1 = t_basis + t_root
-            t2 = t_basis - t_root
-            t = None
-            if t1 >= 0 and t2 >= 0:
-                t = t1 if t1 < t2 else t2
-            elif t1 >= 0:
-                t = t1
-            elif t2 >= 0:
-                t = t2
-            if t is not None:
-                intersection_point = ray.position(t)
-                normal_vector = (intersection_point - self.origin).normalize()
-                return intersection_point, normal_vector, self.material, t
-        return None
+        a = ray.direction.length()**2
+        half_b = oc * ray.direction
+        c = oc.length()**2 - self.radius**2
+
+        discriminant = half_b * half_b - a * c
+        if discriminant < 0:
+            return None
+
+        sqrtd = math.sqrt(discriminant)
+
+        root = (-half_b - sqrtd) / a
+
+        if not t_min < root < t_max:
+            root = (-half_b + sqrtd) / a
+            if not t_min < root < t_max:
+                return None
+
+        intersection_point = ray.position(root)
+        normal_vector = (intersection_point - self.origin) / self.radius
+
+        return intersection_point, normal_vector, self.material, root

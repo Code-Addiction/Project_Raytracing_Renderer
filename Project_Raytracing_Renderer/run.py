@@ -16,7 +16,7 @@ DEFAULT_SPHERES = {0: (1, 1, -2, 1, 255, 0, 0),
                    4: (3.5, 0, -2, 2, 255, 255, 255)}
 
 
-def step1(path: str, width: int, height: int) -> None:
+def step1(path: str, width: int, height: int, gamma_correction: bool) -> None:
     red, green, blue = 0, 0, 0
 
     successful_input = False
@@ -44,10 +44,10 @@ def step1(path: str, width: int, height: int) -> None:
 
     color = Vector(red, green, blue)
     image = Image(width, height, color)
-    image.save_image(path)
+    image.save_image(path, gamma_correction)
 
 
-def step2(path: str, width: int, height: int) -> None:
+def step2(path: str, width: int, height: int, gamma_correction: bool) -> None:
     focal_length, viewport_width, samples_per_pixel = 0, 0, 1
 
     successful_input = False
@@ -73,10 +73,10 @@ def step2(path: str, width: int, height: int) -> None:
                     samples_per_pixel)
     scene = Scene(camera)
     image = scene.render(width, 1)
-    image.save_image(path)
+    image.save_image(path, gamma_correction)
 
 
-def step3(path: str, width: int, height: int) -> None:
+def step3(path: str, width: int, height: int, gamma_correction: bool) -> None:
     focal_length, viewport_width, samples_per_pixel, render_depth = 0, 0, 1, 1
 
     successful_input = False
@@ -200,10 +200,10 @@ def step3(path: str, width: int, height: int) -> None:
 
     scene.add(spheres)
     image = scene.render(width, render_depth)
-    image.save_image(path)
+    image.save_image(path, gamma_correction)
 
 
-def step4(path: str, width: int, height: int) -> None:
+def step4(path: str, width: int, height: int, gamma_correction: bool) -> None:
     focal_length, viewport_width, samples_per_pixel, render_depth = 0, 0, 0, 1
     number_images = 0
     samples_per_pixel_default = [1, 2, 4, 8, 16]
@@ -353,10 +353,10 @@ def step4(path: str, width: int, height: int) -> None:
 
         scene.add(spheres)
         image = scene.render(width, render_depth)
-        image.save_image(path)
+        image.save_image(path, gamma_correction)
 
 
-def step5(path: str, width: int, height: int) -> None:
+def step5(path: str, width: int, height: int, gamma_correction: bool) -> None:
     focal_length, viewport_width, samples_per_pixel, render_depth = 0, 0, 0, 0
     number_images, number_images_per_depth = 0, 0
     max_depth_default = [1, 2, 4, 8, 16]
@@ -528,12 +528,12 @@ def step5(path: str, width: int, height: int) -> None:
                             continue
                         successful_input = True
 
-                sphere = Sphere(Vector(x, y, z), radius, Materials.Diffuse(Vector(red, green, blue)))
+                sphere = Sphere(Vector(x, y, z), radius, Materials.Specular(Vector(red, green, blue)))
                 spheres.append(sphere)
 
             scene.add(spheres)
             image = scene.render(width, render_depth)
-            image.save_image(path)
+            image.save_image(path, gamma_correction)
 
 
 METHODS = {1: step1, 2: step2, 3: step3, 4: step4, 5: step5}
@@ -610,9 +610,15 @@ def main(arguments: list | None = None) -> None:
             print("Chosen height is not valid")
             already_asked = False
 
+    gamma_correction = input("Should the images get gamma corrected (default: no; yes or y for yes): ")
+    if gamma_correction.lower() in ['yes', 'y']:
+        gamma_correction = True
+    else:
+        gamma_correction = False
+
     print("\nFor recreating images from results, use all default values\n")
 
-    step(path, width, height)
+    step(path, width, height, gamma_correction)
 
 
 if __name__ == '__main__':
