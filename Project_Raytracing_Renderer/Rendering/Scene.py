@@ -8,7 +8,6 @@ from Project_Raytracing_Renderer.Objects.World import World
 from Project_Raytracing_Renderer.Rendering.RenderingProcess import RenderingProcess
 from Project_Raytracing_Renderer import Materials
 import multiprocessing as mp
-import time
 
 
 class Scene:
@@ -20,7 +19,7 @@ class Scene:
         self.world.add(sphere)
         return self
 
-    def render(self, width: int, render_depth: int, in_parallel: bool = False, number_cores: int = 0) -> Image:
+    def render(self, width: int, render_depth: int, in_parallel: bool = True, number_cores: int = 0) -> Image:
         if not in_parallel:
             return self.camera.render(width, render_depth, self.world)
 
@@ -52,7 +51,6 @@ class Scene:
 
 
 if __name__ == '__main__':
-    start_time = time.time_ns()
     Scene(Camera(Vector(0, 0, 0),
                  1, 16 / 9,
                  3.555555555555555555555555555556, 16)).add([Sphere(Vector(0, -100.5, -1),
@@ -61,43 +59,17 @@ if __name__ == '__main__':
                                                                                              0.8 * 255,
                                                                                              0))),
                                                              Sphere(Vector(0, 0, -1),
-                                                                    0.5, Materials.Diffuse(Vector(0.7 * 255,
-                                                                                                  0.3 * 255,
-                                                                                                  0.3 * 255))),
+                                                                    0.5, Materials.Transmissive(Vector(1 * 255,
+                                                                                                       1 * 255,
+                                                                                                       1 * 255),
+                                                                                                1.5)),
                                                              Sphere(Vector(-1, 0, -1),
                                                                     0.5, Materials.Specular(Vector(0.8 * 255,
                                                                                                    0.8 * 255,
-                                                                                                   0.8 * 255),
-                                                                                            0.3)),
+                                                                                                   0.8 * 255))),
                                                              Sphere(Vector(1, 0, -1),
                                                                     0.5, Materials.Specular(Vector(0.8 * 255,
                                                                                                    0.6 * 255,
-                                                                                                   0.2 * 255)))
-                                                             ]).render(600, 16, False).save_image('test_ser.ppm', True)
-    end_time = time.time_ns()
-    print("Serial took:", end_time - start_time)
-
-    start_time = time.time_ns()
-    Scene(Camera(Vector(0, 0, 0),
-                 1, 16 / 9,
-                 3.555555555555555555555555555556, 16)).add([Sphere(Vector(0, -100.5, -1),
-                                                                    100,
-                                                                    Materials.Diffuse(Vector(0.8 * 255,
-                                                                                             0.8 * 255,
-                                                                                             0))),
-                                                             Sphere(Vector(0, 0, -1),
-                                                                    0.5, Materials.Diffuse(Vector(0.7 * 255,
-                                                                                                  0.3 * 255,
-                                                                                                  0.3 * 255))),
-                                                             Sphere(Vector(-1, 0, -1),
-                                                                    0.5, Materials.Specular(Vector(0.8 * 255,
-                                                                                                   0.8 * 255,
-                                                                                                   0.8 * 255),
-                                                                                            0.3)),
-                                                             Sphere(Vector(1, 0, -1),
-                                                                    0.5, Materials.Specular(Vector(0.8 * 255,
-                                                                                                   0.6 * 255,
-                                                                                                   0.2 * 255)))
-                                                             ]).render(600, 16, True).save_image('test_par.ppm', True)
-    end_time = time.time_ns()
-    print("Parallel took:", end_time - start_time)
+                                                                                                   0.2 * 255),
+                                                                                            0.5))
+                                                             ]).render(600, 16).save_image('test.ppm', True)

@@ -13,7 +13,7 @@ class Specular(Material):
 
     def scatter(self, ray: Ray, intersection_point: Vector,
                 normal_vector: Vector) -> tuple[Ray, Vector] | None:
-        reflected = ray.direction - normal_vector * 2 * (ray.direction * normal_vector)
+        reflected = Material.reflect(ray.direction.normalize(), normal_vector)
 
         if self.fuzz > 0:
             fuzz_reflection = None

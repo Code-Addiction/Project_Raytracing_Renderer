@@ -41,6 +41,9 @@ class Vector:
     def __eq__(self, other) -> bool:
         return self.x == other.x and self.y == other.y and self.z == other.z
 
+    def __neg__(self):
+        return Vector(-self.x, -self.y, -self.z)
+
     def length(self) -> float:
         return math.sqrt(self.x**2 + self.y**2 + self.z**2)
 
