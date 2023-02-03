@@ -6,6 +6,7 @@ from Project_Raytracing_Renderer.Rendering.Image import Image
 from Project_Raytracing_Renderer.Objects.World import World
 from Project_Raytracing_Renderer.Materials.NoTexture import NoTexture
 import numpy as np
+from multiprocessing import Array
 
 
 class Camera:
@@ -41,6 +42,29 @@ class Camera:
                     pixel_color = pixel_color / self.samples_per_pixel
                 image.update(i, j, pixel_color)
         return image
+
+    def render_parallel(self, width: int, render_depth: int, world: World,
+                        height_start: int, height_end: int, output_array: Array):
+        height = int(width // self.aspect_ratio)
+        for j in range(height_start, height_end)[::-1]:
+            index = j * width * 3
+            for i in range(width):
+                pixel_color = Vector(0, 0, 0)
+                if self.samples_per_pixel == 1:
+                    u = i / (width - 1)
+                    v = j / (height - 1)
+                    pixel_color = Camera.get_color(self.get_ray(u, v), world, render_depth)
+                else:
+                    for _ in range(self.samples_per_pixel):
+                        u = (i + np.random.uniform()) / (width - 1)
+                        v = (j + np.random.uniform()) / (height - 1)
+                        pixel_color = pixel_color + Camera.get_color(self.get_ray(u, v), world, render_depth)
+                    pixel_color = pixel_color / self.samples_per_pixel
+
+                output_array[index] = int(pixel_color.x)
+                output_array[index + 1] = int(pixel_color.y)
+                output_array[index + 2] = int(pixel_color.z)
+                index = index + 3
 
     def get_ray(self, s: float, t: float) -> Ray:
         return Ray(self.origin, self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin)
