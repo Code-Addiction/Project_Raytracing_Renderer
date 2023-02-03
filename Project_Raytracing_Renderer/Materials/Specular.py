@@ -25,5 +25,5 @@ class Specular(Material):
             reflected = reflected + fuzz_reflection * self.fuzz
 
         if reflected * normal_vector > 0:
-            return Ray(intersection_point, reflected), self.color
+            return Ray(intersection_point, reflected, ray.time), self.color
         return None

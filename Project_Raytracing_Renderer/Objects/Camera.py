@@ -8,6 +8,7 @@ from Project_Raytracing_Renderer.Rendering.Image import Image
 from Project_Raytracing_Renderer.Objects.World import World
 from Project_Raytracing_Renderer.Materials.NoTexture import NoTexture
 import numpy as np
+import random
 from multiprocessing import Array
 
 
@@ -15,7 +16,7 @@ class Camera:
     def __init__(self, look_from: Vector, look_at: Vector, up: Vector,
                  vfov: float, focal_length: float,
                  aspect_ratio: float, viewport_height: float,
-                 samples_per_pixel: int) -> None:
+                 samples_per_pixel: int, time_interval: tuple[float, float] | None = None) -> None:
         self.focal_length = focal_length
         self.aspect_ratio = aspect_ratio
         self.viewport_height = viewport_height * math.tan(math.radians(vfov) / 2)
@@ -29,6 +30,7 @@ class Camera:
         self.lower_left_corner = (self.origin - self.horizontal / 2 -
                                   self.vertical / 2 - self.w)
         self.samples_per_pixel = samples_per_pixel
+        self.time_interval = time_interval
 
     def render(self, width: int, render_depth: int, world: World, background: Vector | None = None) -> Image:
         height = int(width // self.aspect_ratio)
@@ -76,6 +78,10 @@ class Camera:
                 index = index + 3
 
     def get_ray(self, s: float, t: float) -> Ray:
+        if self.time_interval is not None:
+            time0, time1 = self.time_interval
+            return Ray(self.origin, self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin,
+                       random.uniform(time0, time1))
         return Ray(self.origin, self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin)
 
     @staticmethod

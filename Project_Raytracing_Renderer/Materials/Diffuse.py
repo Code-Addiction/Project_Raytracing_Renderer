@@ -18,4 +18,4 @@ class Diffuse(Material):
         if scatter_direction.near_zero():
             scatter_direction = normal_vector
 
-        return Ray(intersection_point, scatter_direction), self.color
+        return Ray(intersection_point, scatter_direction, ray.time), self.color

@@ -33,5 +33,4 @@ class Transmissive(Material):
         else:
             direction = Material.refract(direction_normalized, normal_vector, refraction_ratio, factor)
 
-        scattered = Ray(intersection_point, direction)
-        return scattered, self.color
+        return Ray(intersection_point, direction, ray.time), self.color
