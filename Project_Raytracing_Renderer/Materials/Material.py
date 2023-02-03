@@ -12,6 +12,9 @@ class Material:
     def scatter(self, ray: Ray, intersection_point: Vector, normal_vector: Vector) -> tuple[Ray, Vector] | None:
         raise NotImplementedError
 
+    def emit(self):
+        return Vector(0, 0, 0)
+
     @staticmethod
     def reflect(direction: Vector, normal_vector: Vector) -> Vector:
         return direction - normal_vector * (direction * normal_vector) * 2

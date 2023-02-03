@@ -30,7 +30,7 @@ class Camera:
                                   self.vertical / 2 - self.w)
         self.samples_per_pixel = samples_per_pixel
 
-    def render(self, width: int, render_depth: int, world: World) -> Image:
+    def render(self, width: int, render_depth: int, world: World, background: Vector | None = None) -> Image:
         height = int(width // self.aspect_ratio)
         image = Image(width, height)
         for j in range(height)[::-1]:
@@ -39,18 +39,20 @@ class Camera:
                 if self.samples_per_pixel == 1:
                     u = i / (width - 1)
                     v = j / (height - 1)
-                    pixel_color = Camera.get_color(self.get_ray(u, v), world, render_depth)
+                    pixel_color = Camera.get_color(self.get_ray(u, v), world, render_depth, background)
                 else:
                     for _ in range(self.samples_per_pixel):
                         u = (i + np.random.uniform()) / (width - 1)
                         v = (j + np.random.uniform()) / (height - 1)
-                        pixel_color = pixel_color + Camera.get_color(self.get_ray(u, v), world, render_depth)
+                        pixel_color = pixel_color + Camera.get_color(self.get_ray(u, v), world,
+                                                                     render_depth, background)
                     pixel_color = pixel_color / self.samples_per_pixel
                 image.update(i, j, pixel_color)
         return image
 
     def render_parallel(self, width: int, render_depth: int, world: World,
-                        height_start: int, height_end: int, output_array: Array):
+                        height_start: int, height_end: int, output_array: Array,
+                        background: Vector | None = None) -> None:
         height = int(width // self.aspect_ratio)
         for j in range(height_start, height_end)[::-1]:
             index = j * width * 3
@@ -59,12 +61,13 @@ class Camera:
                 if self.samples_per_pixel == 1:
                     u = i / (width - 1)
                     v = j / (height - 1)
-                    pixel_color = Camera.get_color(self.get_ray(u, v), world, render_depth)
+                    pixel_color = Camera.get_color(self.get_ray(u, v), world, render_depth, background)
                 else:
                     for _ in range(self.samples_per_pixel):
                         u = (i + np.random.uniform()) / (width - 1)
                         v = (j + np.random.uniform()) / (height - 1)
-                        pixel_color = pixel_color + Camera.get_color(self.get_ray(u, v), world, render_depth)
+                        pixel_color = pixel_color + Camera.get_color(self.get_ray(u, v), world,
+                                                                     render_depth, background)
                     pixel_color = pixel_color / self.samples_per_pixel
 
                 output_array[index] = int(pixel_color.x)
@@ -76,21 +79,25 @@ class Camera:
         return Ray(self.origin, self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin)
 
     @staticmethod
-    def get_color(ray: Ray, world: World, max_depth: int) -> Vector:
+    def get_color(ray: Ray, world: World, max_depth: int, background: Vector | None = None) -> Vector:
         if max_depth < 1:
             return Vector(0, 0, 0)
 
         result = world.hits(ray, 0.001, float('inf'))
         if result is not None:
             intersection_point, normal_vector, material, _ = result
+            emitted = material.emit()
             material_result = material.scatter(ray, intersection_point, normal_vector)
             if material_result is not None:
                 scattered, attenuation = material_result
-                return attenuation.modulate(Camera.get_color(scattered, world, max_depth - 1))
+                return emitted + attenuation.modulate(Camera.get_color(scattered, world, max_depth - 1, background))
             elif type(material) == NoTexture:
                 return material.color
-            return Vector(0, 0, 0)
+            return emitted
 
-        unit_direction = ray.direction.normalize()
-        t = 0.5 * (unit_direction.y + 1)
-        return Vector(255, 255, 255) * (1 - t) + Vector(127.5, 178.5, 255) * t
+        if background is not None:
+            return background
+        else:
+            unit_direction = ray.direction.normalize()
+            t = 0.5 * (unit_direction.y + 1)
+            return Vector(255, 255, 255) * (1 - t) + Vector(127.5, 178.5, 255) * t
