@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 from Project_Raytracing_Renderer.Rendering.Ray import Ray
 from Project_Raytracing_Renderer.Rendering.Vector import Vector
 from Project_Raytracing_Renderer.Rendering.Image import Image
@@ -10,18 +12,22 @@ from multiprocessing import Array
 
 
 class Camera:
-    def __init__(self, origin: Vector, focal_length: float,
-                 aspect_ratio: float, viewport_width: float,
+    def __init__(self, look_from: Vector, look_at: Vector, up: Vector,
+                 vfov: float, focal_length: float,
+                 aspect_ratio: float, viewport_height: float,
                  samples_per_pixel: int) -> None:
         self.focal_length = focal_length
         self.aspect_ratio = aspect_ratio
-        self.viewport_width = viewport_width
-        self.viewport_height = self.viewport_width / self.aspect_ratio
-        self.origin = origin
-        self.horizontal = Vector(self.viewport_width, 0, 0)
-        self.vertical = Vector(0, self.viewport_height, 0)
+        self.viewport_height = viewport_height * math.tan(math.radians(vfov) / 2)
+        self.viewport_width = self.aspect_ratio * self.viewport_height
+        self.origin = look_from
+        self.w = (look_from - look_at).normalize()
+        self.u = Vector.cross_product(up, self.w).normalize()
+        self.v = Vector.cross_product(self.w, self.u)
+        self.horizontal = self.u * self.viewport_width
+        self.vertical = self.v * self.viewport_height
         self.lower_left_corner = (self.origin - self.horizontal / 2 -
-                                  self.vertical / 2 - Vector(0, 0, self.focal_length))
+                                  self.vertical / 2 - self.w)
         self.samples_per_pixel = samples_per_pixel
 
     def render(self, width: int, render_depth: int, world: World) -> Image:

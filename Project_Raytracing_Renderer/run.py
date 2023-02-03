@@ -67,6 +67,9 @@ def step2(path: str, width: int, height: int, gamma_correction: bool) -> None:
         successful_input = True
 
     camera = Camera(Vector(0, 0, 0),
+                    Vector(0, 0, -1),
+                    Vector(0, 1, 0),
+                    90,
                     focal_length,
                     width / height,
                     viewport_width,
@@ -96,6 +99,9 @@ def step3(path: str, width: int, height: int, gamma_correction: bool) -> None:
         successful_input = True
 
     camera = Camera(Vector(0, 0, 0),
+                    Vector(0, 0, -1),
+                    Vector(0, 1, 0),
+                    90,
                     focal_length,
                     width / height,
                     viewport_width,
@@ -249,6 +255,9 @@ def step4(path: str, width: int, height: int, gamma_correction: bool) -> None:
             successful_input = True
 
         camera = Camera(Vector(0, 0, 0),
+                        Vector(0, 0, -1),
+                        Vector(0, 1, 0),
+                        90,
                         focal_length,
                         width / height,
                         viewport_width,
@@ -429,6 +438,9 @@ def step5(path: str, width: int, height: int, gamma_correction: bool) -> None:
                 successful_input = True
 
             camera = Camera(Vector(0, 0, 0),
+                            Vector(0, 0, -1),
+                            Vector(0, 1, 0),
+                            90,
                             focal_length,
                             width / height,
                             viewport_width,
