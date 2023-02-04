@@ -2,7 +2,6 @@ from __future__ import annotations
 
 
 import math
-import numpy as np
 
 
 class Vector:
@@ -50,13 +49,6 @@ class Vector:
     def normalize(self) -> Vector:
         return Vector(self.x / self.length(), self.y / self.length(), self.z / self.length())
 
-    def to_array(self) -> np.ndarray:
-        return np.asarray([self.x, self.y, self.z], dtype=np.uint8)
-
-    @classmethod
-    def from_array(cls, array: np.ndarray) -> Vector:
-        return Vector(array[0], array[1], array[2])
-
     @staticmethod
     def cross_product(vector1: Vector, vector2: Vector) -> Vector:
         x = vector1.y * vector2.z - vector1.z * vector2.y
@@ -74,6 +66,3 @@ class Vector:
 
     def near_zero(self) -> bool:
         return self.x < 0.00000001 and self.y < 0.00000001 and self.z < 0.00000001
-
-    def __str__(self) -> str:
-        return f'({self.x}, {self.y}, {self.z})'

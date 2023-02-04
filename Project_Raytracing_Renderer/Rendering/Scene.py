@@ -6,7 +6,6 @@ from Project_Raytracing_Renderer.Rendering.Image import Image
 from Project_Raytracing_Renderer.Rendering.Vector import Vector
 from Project_Raytracing_Renderer.Objects.World import World
 from Project_Raytracing_Renderer.Rendering.RenderingProcess import RenderingProcess
-from Project_Raytracing_Renderer import Materials
 import multiprocessing as mp
 
 
@@ -50,34 +49,3 @@ class Scene:
             process.join()
 
         return Image(width, height, array=results)
-
-
-if __name__ == '__main__':
-    Scene(Camera(Vector(0, 0, 1), Vector(0, 0, -1), Vector(0, 1, 0),
-                 90, 1, 16 / 9,
-                 2, 128, (0, 1)), Vector(0, 0, 0)).add([Sphere(Vector(0, -100.5, -1),
-                                                              100,
-                                                              Materials.Diffuse(Vector(0.8 * 255,
-                                                                                       0.8 * 255,
-                                                                                       0))),
-                                                       Sphere(Vector(0, 0, -1),
-                                                              0.5, Materials.Transmissive(Vector(1 * 255,
-                                                                                                 1 * 255,
-                                                                                                 1 * 255),
-                                                                                          1.5)),
-                                                       Sphere(Vector(-1, 0, -1),
-                                                              0.5, Materials.Specular(Vector(0.8 * 255,
-                                                                                             0.8 * 255,
-                                                                                             0.8 * 255)),
-                                                              (Vector(-2, 0, -1), 0, 2)),
-                                                       Sphere(Vector(1, 0, -1),
-                                                              0.5, Materials.Specular(Vector(0.8 * 255,
-                                                                                             0.6 * 255,
-                                                                                             0.2 * 255),
-                                                                                      0.5)),
-                                                       Sphere(Vector(50, 150, 110),
-                                                              100, Materials.Emissive(Vector(1 * 255,
-                                                                                             1 * 255,
-                                                                                             1 * 255),
-                                                                                      1))
-                                                       ]).render(600, 50).save_image('test.ppm', True)

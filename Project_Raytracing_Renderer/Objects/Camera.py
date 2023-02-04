@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import math
-
 from Project_Raytracing_Renderer.Rendering.Ray import Ray
 from Project_Raytracing_Renderer.Rendering.Vector import Vector
 from Project_Raytracing_Renderer.Rendering.Image import Image
@@ -9,6 +7,7 @@ from Project_Raytracing_Renderer.Objects.World import World
 from Project_Raytracing_Renderer.Materials.NoTexture import NoTexture
 import numpy as np
 import random
+import math
 from multiprocessing import Array
 
 

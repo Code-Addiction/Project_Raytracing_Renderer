@@ -1,0 +1,32 @@
+{"background": [0, 0, 0],
+"camera": {
+	"look_from": [0, 0, 0],
+	"look_at": [0, 0, -1],
+	"up": [0, 1, 0],
+	"vfov": 90,
+	"focal_length": 1,
+	"aspect_ratio": 1.7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777778,
+	"viewport_height": 2,
+	"samples_per_pixel": 32
+	},
+"rendering": {
+	"width": 600,
+	"render_depth": 32,
+	"in_parallel": true,
+	"number_cores" : 0
+	},
+"saving": {
+	"path": "results/test.ppm",
+	"gamma_correct": true
+	},
+"spheres": [{
+	"origin": [-2, 1, -2], 
+	"radius": 1,
+	"material": {
+			"type": "emissive",
+			"color": [100, 150, 200],
+			"intensity": 0.75
+			},
+	"movement": [[-3, 1, -2], 0, 1]
+	}]
+}

@@ -1,0 +1,10 @@
+{"image": {
+	"width": 1920,
+	"height": 1080,
+	"color": [128, 64, 255]
+	},
+"saving": {
+	"path": "results/step1.ppm",
+	"gamma_correct": false
+	}
+}

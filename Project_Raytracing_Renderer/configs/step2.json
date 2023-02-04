@@ -1,0 +1,20 @@
+{"camera": {
+	"look_from": [0, 0, 0],
+	"look_at": [0, 0, -1],
+	"up": [0, 1, 0],
+	"vfov": 90,
+	"focal_length": 1,
+	"aspect_ratio": 1.7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777778,
+	"viewport_height": 2,
+	"samples_per_pixel": 1
+	},
+"rendering": {
+	"width": 1920,
+	"render_depth": 1,
+	"in_parallel": true
+	},
+"saving": {
+	"path": "results/step2.ppm",
+	"gamma_correct": false
+	}
+}
