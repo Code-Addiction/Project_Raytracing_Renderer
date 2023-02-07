@@ -32,7 +32,7 @@ class Scene:
         height = int(width // self.camera.aspect_ratio)
         rows_per_process = int(height // number_cores)
 
-        results = mp.Array('B', height * width * 3)
+        results = mp.RawArray('B', height * width * 3)
 
         for i in range(number_cores - 1):
             process = RenderingProcess(width, render_depth, self.world,

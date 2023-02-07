@@ -8,7 +8,7 @@ from Project_Raytracing_Renderer.Materials.NoTexture import NoTexture
 import numpy as np
 import random
 import math
-from multiprocessing import Array
+from multiprocessing import RawArray as Array
 
 
 class Camera:

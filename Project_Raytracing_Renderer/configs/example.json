@@ -10,7 +10,7 @@
 	"samples_per_pixel": 32
 	},
 "rendering": {
-	"width": 600,
+	"width": 1080,
 	"render_depth": 32,
 	"in_parallel": true,
 	"number_cores" : 0
@@ -20,12 +20,22 @@
 	"gamma_correct": true
 	},
 "spheres": [{
-	"origin": [-2, 1, -2], 
-	"radius": 1,
+	"origin": [-2, 1, -4],
+	"radius": 2,
 	"material": {
 			"type": "emissive",
 			"color": [100, 150, 200],
 			"intensity": 0.75
+			},
+	"movement": [[-3, 1, -2], 0, 1]
+	},
+	{
+	"origin": [-2, 1, -2],
+	"radius": 1,
+	"material": {
+			"type": "transmissive",
+			"color": [255, 255, 255],
+			"refraction_index": 1.5
 			},
 	"movement": [[-3, 1, -2], 0, 1]
 	}]
