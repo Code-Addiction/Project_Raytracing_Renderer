@@ -81,7 +81,7 @@ def main():
     path = input("Please enter path of config file or 'all' for all files in config directory: ")
     if path.lower() == 'all':
         for path in os.listdir("configs/"):
-            if path == 'example.json' or path[:5] != "step6":
+            if path == 'example.json' or path[:5] != "step7":
                 continue
             render_config("configs/" + path)
     else:
