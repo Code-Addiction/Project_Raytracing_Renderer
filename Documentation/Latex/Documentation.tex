@@ -71,6 +71,7 @@
 
 \newpage
 \chapter{Rendering loop}
+\label{chp:step1}
 \pagenumbering{arabic}
 The rendering process consists of two loops. One outer loop which iterates through the rows of the image and the inner loop iterating through the columns of the image. This way, every pixel will be visited once and the color of the pixel can be calculated. In this basic version of the rendering loop the color of every pixel will be set to (128, 64, 255). The resulting image can be seen in figure \ref{fig:step1}.
 \begin{figure}[h!]
@@ -94,7 +95,21 @@ def save_image(self, path: str):
 \end{lstlisting}
 
 \chapter{Camera}
-jhfjgjkfgjfghjjfg
+The project is extended by a \textit{Ray} and \textit{Camera} class. A ray can be used to find all objects that need to be projected onto one pixel and thus finding the color of a pixel. Every ray has an origin and a direction, with both being instances of the \textit{Vector} class. It is possible to get the position of a ray through its method \textit{position}. The camera represents the observer of the scene and has properties such as position and information about the image. The rendering loop from chapter \ref{chp:step1} is moved into the camera class. It uses the cameras properties to find the color for every pixel. This is done by sending a ray from the camera to every pixel and finding the color of this ray. Because there are no objects in the scene yet, the color of a ray is the color of the background at that position as shown in source code \ref{lst:step2}.
+\begin{lstlisting}[caption={Color of ray}, label=lst:step2, style=mystyle]
+def get_color(ray: Ray):
+    unit_direction = ray.direction.normalize()
+    t = 0.5 * (unit_direction.y + 1)
+    ray_color = Vector(255, 255, 255) * (1 - t) + Vector(127.5, 178.5, 255) * t
+    return ray_color
+\end{lstlisting}
+This results in an image which goes from light blue at the top to a white color at the bottom, as can be seen in figure \ref{fig:step2}.
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{step2}
+\centering
+\caption{Rendering with camera and colored background}
+\label{fig:step2}
+\end{figure}
 
 \chapter{Objects: shape}
 jhfjgjkfgjfghjjfg
