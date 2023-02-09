@@ -67,16 +67,6 @@ class Image:
         else:
             self._matrix[i][j] = color
 
-    @classmethod
-    def from_array(cls, width: int, height: int, array) -> Image:
-        image = Image(width, height)
-        for j in range(height):
-            for i in range(width):
-                index = (j * width + i) * 3
-                color = Vector(array[index], array[index + 1], array[index + 2])
-                image.update(i, j, color)
-        return image
-
     def __str__(self) -> str:
         if self._array is not None:
             return str(self._array)
