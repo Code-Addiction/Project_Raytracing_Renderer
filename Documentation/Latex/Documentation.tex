@@ -169,7 +169,52 @@ The reason for this is, that only one ray is sent through each pixel at the left
 From figure \ref{fig:step4} can be seen, that the more rays are used per pixel the more different color shades are used at the sphere's border. In comparison to only one ray (figure \ref{fig:aliasing}), it is visible that the sphere's edge becomes much smoother the more rays are used.
 
 \chapter{Objects material: diffuse}
-jhfjgjkfgjfghjjfg
+The images produced so far look rather 2D than 3D, it seems like there is no depth in the image. This is caused by the uniform color of the spheres. In the real world, a sphere has reflections on it and the color looks different depending of the viewing angle. Also there are no shadows of the spheres on one another if they are close. To solve this and make the image more realistic, materials are introduced. A parent class \textit{Material} defines all methods needed for a material. Instead of a color, every sphere now gets a material that contains the color information. To make the rendered backwards compatible and being able to still recreate previous images, a \textit{NoTexture} material is implemented. This material has no texture and only has its color, simulating the appearance of spheres without materials. By doing so, a consisting interface is created where every sphere has a material and the methods provided by the \textit{Material} can always be used. Therefore, \textit{NoTexture} and all other implemented materials inherit from the \textit{Material} class. To have a simple texture for the spheres, the material \textit{Diffuse} is added. This reflects the ray, when hit by it, in a random direction following it normal vector at this point. By using the normal vector as the baseline for the reflected ray, the curvature of the sphere becomes visible. But to make it more realistic, a bit of randomness is added on top of the normal vector. The ray now does simply takes the color of the sphere it has hit, but  follows in the reflected direction to see if it hits another object there. This way, the ray that, in the normal world would come from the light source, bounce of some objects and then go into the camera, is simulated backwards. At this point, the only source of light is the background. By modulating all colors the ray encounters on its way, the final color can be determined. It is done in a way where the color components are multiplied with each other. This is realistic taking into account that complementary colors if mixed result in black in the real world and also with this modulation. The modulation is shown in source code \ref{lst:modulation}. \\\\\\
+\begin{lstlisting}[caption={Modulating two colors}, label=lst:modulation, style=mystyle]
+def modulate(self, other: Vector) -> Vector:
+    return Vector(self.x * other.x / 255, self.y * other.y / 255, self.z * other.z / 255)
+\end{lstlisting}
+Because the program needs to be terminated at some point, a maximum number of times the ray can bounce of objects has to be defined. Otherwise it could occur, that the ray gets stuck between multiple objects always going from one object to the other and the program therefore never finishing. If this maximum number of bounces is reached, the color of the ray is set to black, because it did not come from a light source. The influence of the render depth (the maximum number of bounces) onto the finale image can be seen in figure \ref{fig:step5}. It can be seen, that the bigger the render depth the less noise the image appears. In the real world the light ray can bounce of unlimited time (assuming the light does not lose energy by absorption or scattering). With a higher render depth, it is more likely that the light source of the ray is found and thus the ray does not get set to black. These ''false'' black rays happen more often with a lower render depth letting the image seem noisy. A render depth of 1 is the extreme case of this, here every ray that hits an object is assumed to not come from a light source portraying all spheres as black. \\
+Simply modulating as shown in source code \ref{lst:modulation} causes the rays to become darker the more often they are reflected. Because of that the image is getting darker which is not wanted. To reduce this effect, the image needs to be gamma corrected. This is done by taking the square root of the relative intensity of the color component (hence the color component in an interval of 0 to 1). The gamma correction is represented in source code \ref{lst:gamma}.
+\begin{lstlisting}[caption={Gamma correction}, label=lst:gamma, style=mystyle]
+red = math.sqrt(red / 255) * 255
+green = math.sqrt(green / 255) * 255
+blue = math.sqrt(blue / 255) * 255
+\end{lstlisting}
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step5_depth1}
+\caption{Render depth 1}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step5_depth2}
+\caption{Render depth 2}
+\end{subfigure}
+\vskip\baselineskip
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step5_depth4}
+\caption{Render depth 4}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step5_depth8}
+\caption{Render depth 8}
+\end{subfigure}
+\vskip\baselineskip
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step5_depth16}
+\caption{Render depth 16}
+\end{subfigure}
+\caption{Spheres with diffuse material and different render depths}
+\label{fig:step5}
+\end{figure}
 
 \chapter{Objects material: specular}
 jhfjgjkfgjfghjjfg
