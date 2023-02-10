@@ -15,6 +15,7 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \graphicspath{ {./img/} }
+\usepackage{subcaption}
 
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter. #1}{}}
 \titleformat{\chapter}{\normalfont\huge\bfseries}{\thechapter}{0.35cm}{}
@@ -112,10 +113,60 @@ This results in an image which goes from light blue at the top to a white color 
 \end{figure}
 
 \chapter{Objects: shape}
-jhfjgjkfgjfghjjfg
+After adding a camera to the scene, the next logical step is to add objects. The chosen object to start with are spheres. For this a class \textit{Sphere} is implemented, which takes a vector as origin, a radius and a color vector. A \textit{Sphere} instance can return if a given ray hits it and if so, can calculate the intersection point of the ray and itself and its normal vector at that point. The normal vector is chosen to always point outwards of the sphere. If a ray hits a sphere, the ray adopts the color of the sphere. To better organize the handling of the sphere objects, a \textit{Scene} class is used. This class represents the scene and holds the camera and all objects in this scene. The objects are stored in an instance of the \textit{World} class. This class is basically an abstracted list with the benefit, that it provides a \textit{hit} method. Like the equivalent method of the \textit{Sphere} class, it determines if the ray hits an object. But this method checks all spheres and returns the information about the sphere, that gets hit by the ray first. This solves the visibility problem of multiple spheres being stacked behind each other. It also simplifies the rendering loop to not having to iterate through all spheres, because this is done internally by this method. To keep the interface simple, the \textit{Scene} class also offers a \textit{render} method which just forwards to the equivalent method of the camera. This way, all required actions can be performed using a \textit{Scene} instance which, after rendering, returns an \textit{Image} instance that can be used as needed. To change the scene after creation, it provides a function to add spheres to it. This class structure simplifies the whole process from creating to rendering and saving the image to:
+\begin{itemize}
+\item Creating a \textit{Camera} instance with preferred properties
+\item Creating a \textit{Scene} object giving the camera instance as a parameter
+\item Creating and adding as many \textit{Sphere} instances to the scene object as wanted
+\item Using \textit{render} function of scene
+\item Saving resulted \textit{Image} object to any path
+\end{itemize}
+Using this procedure, images can be created that contain multiple spheres. Every sphere can have a different color, position and size. If at a position in the image there is no sphere, the background color introduces in the previous chapter is kept. At this point the created rendered has solved the visibility problem, even though in a pretty simple setting. An example of an image created by this renderer is displayed in figure \ref{fig:step3}.
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{step3}
+\centering
+\caption{Image created by simple renderer}
+\label{fig:step3}
+\end{figure}
 
 \chapter{Enhancing camera and rendering loop}
-jhfjgjkfgjfghjjfg
+On the rendered images the spheres seem round, but this is not the actually the case. They only look round because of the ''high'' quality and thus the pixels being pretty small. By zooming into the image at the border of a sphere this can be seen more clearly (figure \ref{fig:aliasing}).
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{aliasing}
+\centering
+\caption{Zoomed in sphere border}
+\label{fig:aliasing}
+\end{figure} \\
+The reason for this is, that only one ray is sent through each pixel at the left end of the pixel. With spheres being round in reality but monitors only being able to display things using pixels, this is no unexpected behavior. But if pixels are bigger -- either because of a lower resolution or because the images are shown on a bigger screen -- this can make the image look unnatural and wrong. One way of improving the border would be using colors in between the two colors (here red and green). This would make the edge less harsh and thus the sphere looks more round. To keep the correct shape of the objects and not adding any visual bumps to it, the color has to be mixed of the two colors keeping the ratio of the objects in this pixel into account. To not having to calculate the ratio for every pixel, which is computational expensive, multiple rays are sent through each pixel at random positions of the pixel. The average color of these rays can then be used as the color of the pixel. The more rays are used per pixel, the closer will the average color be to the true color.
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step4_2rays}
+\caption{2 rays per pixel}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step4_4rays}
+\caption{4 rays per pixel}
+\end{subfigure}
+\vskip\baselineskip
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step4_8rays}
+\caption{8 rays per pixel}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step4_16rays}
+\caption{16 rays per pixel}
+\end{subfigure}
+\caption{Zoomed in sphere border with a different number of rays per pixel}
+\label{fig:step4}
+\end{figure} \\
+From figure \ref{fig:step4} can be seen, that the more rays are used per pixel the more different color shades are used at the sphere's border. In comparison to only one ray (figure \ref{fig:aliasing}), it is visible that the sphere's edge becomes much smoother the more rays are used.
 
 \chapter{Objects material: diffuse}
 jhfjgjkfgjfghjjfg
