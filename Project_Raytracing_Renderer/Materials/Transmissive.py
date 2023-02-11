@@ -8,11 +8,25 @@ import random
 
 
 class Transmissive(Material):
+    """
+        Representation of transmissive materials
+
+        :param color: Color of the material
+        :param refraction_index: Refraction index
+        """
     def __init__(self, color: Vector, refraction_index: float):
         super().__init__(color)
         self._refraction_index = refraction_index
 
     def scatter(self, ray: Ray, intersection_point: Vector, normal_vector: Vector) -> tuple[Ray, Vector] | None:
+        """
+        Calculates how a ray is reflected/refracted
+
+        :param ray: Ray that hits the object
+        :param intersection_point: Point where the ray hits the object
+        :param normal_vector: Normal vector at the point of intersection
+        :return: Reflected/refracted ray and the material's color
+        """
         if ray.direction * normal_vector <= 0:
             factor = 1
             refraction_ratio = 1 / self._refraction_index

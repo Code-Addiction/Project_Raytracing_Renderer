@@ -7,7 +7,18 @@ import random
 
 
 class Diffuse(Material):
+    """
+    Representation of diffuse materials
+    """
     def scatter(self, ray: Ray, intersection_point: Vector, normal_vector: Vector) -> tuple[Ray, Vector] | None:
+        """
+        Calculates how a ray is reflected
+
+        :param ray: Ray that hits the object
+        :param intersection_point: Point where the ray hits the object
+        :param normal_vector: Normal vector at the point of intersection
+        :return: Reflected ray and the material's color
+        """
         reflection = None
         while reflection is None:
             to_test = Vector(random.uniform(-1, 1), random.uniform(-1, 1), random.uniform(-1, 1))

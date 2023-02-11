@@ -217,13 +217,45 @@ blue = math.sqrt(blue / 255) * 255
 \end{figure}
 
 \chapter{Objects material: specular}
-jhfjgjkfgjfghjjfg
+The next material introduced into the image is specular. This material reflects the rays not in a random direction but with the same angle the ray hits the sphere. Using this material, metal spheres and other reflective objects can be produced. By letting the class \textit{Specular} inherit from \textit{Material}, it can be used without changing any existing classes. To make the material more diverse, a parameter ''fuzz'' is given to it. This defines the clearness of the material, 0 being perfectly reflective and the higher the number the less clear the reflection gets. It is achieved by adding a random component to the reflected ray. If ''fuzz'' is 0, no randomness is added to the reflected ray and the bigger the ''fuzz'' the more randomness is added. Figure \ref{fig:step6} contains three spheres with specular material, the silver sphere has a ''fuzz'' of 0, the bronze 0.25 and the gold sphere a ''fuzz'' of 0.1. This shows the influence of the ''fuzz'' onto the reflected image on the sphere's surface. \\
+The calculation of the reflected ray is only dependent on the normalized direction of the ray and the normal vector of the sphere at the point of intersection. The calculation is shown by source code \ref{lst:reflection}.
+\begin{lstlisting}[caption={Calculating reflected ray}, label=lst:reflection, style=mystyle]
+def reflect(direction: Vector, normal_vector: Vector) -> Vector:
+    return direction - normal_vector * (direction * normal_vector) * 2
+\end{lstlisting}
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{step6}
+\centering
+\caption{Image containing spheres with specular material (render depth 16)}
+\label{fig:step6}
+\end{figure}
 
 \chapter{Objects material: specular transmission}
-jhfjgjkfgjfghjjfg
+\vspace*{-0.1cm}
+So far, all materials only reflect the rays. The next material that is added to the project is transmissive, meaning it can let rays go through the object. This characteristic is known from objects made of for example glass or diamond. By letting rays pass through the object, spheres that are behind this object are also visible through the object. Because all objects in the scene are spheres, the area behind the transmissive sphere appears flipped which is a characteristic of transmissive spheres. The transmissive spheres in figure \ref{fig:step7} demonstrate this behavior. As with all other materials, \textit{Transmissive} is a child class of \textit{Material}. These transmissive spheres also show that they not only let rays through, but also reflect some of the rays. This mix of reflected objects on its surface and objects from behind it gives the transmissive spheres its 3D appearance and let them appear more realistic. Especially towards the edge of the visible part these spheres have to mainly reflect than letting the rays pass. This is because the angle of the rays are too steep to enter the spheres. To calculate which rays are reflected, the Schlick Approximation is used. This is a computational efficient way of solving this problem while still producing realistic results. To determine the direction of the passing rays, the function shown in source code \ref{lst:refraction} is used.
+\begin{lstlisting}[caption={Calculating refracted ray}, label=lst:refraction, style=mystyle]
+def refract(direction: Vector, normal_vector: Vector, refraction_ratio: float, factor: int) -> Vector:
+    cos_theta = min(direction * normal_vector * -1 * factor, 1)
+    ray_perp = (direction + normal_vector * cos_theta * factor) * refraction_ratio
+    ray_parl = normal_vector * -math.sqrt(math.fabs(1 - ray_perp.length() ** 2)) * factor
+    return ray_perp + ray_parl
+\end{lstlisting}
+The calculation is based on Snell's Law. But because it assumes that the normal vector is in the opposite direction than the ray, the signs have to be changed if they are in the same direction. The normal vector given by the spheres is always directed away from the sphere's center and thus both cases can occur, depending on if the ray wants to enter or exit the sphere. To change the signs in the equation without using if clauses, the parameter ''factor'' is introduced. This is either 1 or -1, depending on if the signs have to be inverted. The ''refraction\_ratio'' is defined by the material and is used to simulate the different refractional behaviors of real world materials such as glass and diamond.
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{step7}
+\centering
+\caption{Image with added transmissive spheres (render depth 16)}
+\label{fig:step7}
+\end{figure}
 
 \chapter{Lights}
-jhfjgjkfgjfghjjfg
+So far all light is emitted by the background. To make objects emit light, a new material \textit{Emissive} has to be implemented. This has, besides it color, also a parameter defining its intensity. The lower the intensity the darker the emitted light. The emissive behavior of a material can be used by its function ''emit'', which returns the products of its color and intensity. As usual, the class \textit{Emissive} inherits from \textit{Material}. To not have to differentiate between emissive and non-emissive materials, the interface of the \textit{Material} class is also extended by the method ''emit''. If not overwritten by a child class, this method returns simply no light (black). Hence the same source code can be used once again for all materials not having to differentiate between different materials but now including light emitting objects. The value of the emitted light is simply added to the color of the hitting ray. To give emitting objects more importance, the color of the background has be changeable. This is achieved by defining a background color that is returned if a ray does not hit an object (mostly chosen to be black which is equivalent to no light emitted from the background). To still recreate previous images, the same background is used as before if no background color is defined. Figure \ref{fig:step8} shows the influence of emitting objects without a background light onto the image from \ref{fig:step7}. It can be seen that if parts of a sphere's surface are not hit by any light they stay black (visible on the big gold sphere in the center). Now every ray, starting from the camera and hitting an object, needs to hit an emissive object in the end to not be black. So if all light emitting spheres rather small, the whole image will be pretty dark. To avoid that, the slightly visible big sphere above all other spheres is gigantic so that the scene is bright enough. If the space would be enclosed by objects so that the light gets reflected to all places, a smaller light source is sufficient for a similar brightness. To further not distort the spheres colors, a white light sources should be chosen, otherwise all objects will seem as if they have a different color.
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{step8}
+\centering
+\caption{Image with removed background light but instead light emitting spheres (render depth 16)}
+\label{fig:step8}
+\end{figure}
 
 \chapter{Positioning and orienting camera}
 jhfjgjkfgjfghjjfg

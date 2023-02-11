@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from Project_Raytracing_Renderer.Rendering.Scene import Scene
 from Project_Raytracing_Renderer.Rendering.Vector import Vector
 from Project_Raytracing_Renderer.Objects.Camera import Camera
@@ -7,6 +8,7 @@ from Project_Raytracing_Renderer import Materials
 import os
 import json
 
+# Conversion from JSON material to Python material class (with additional parameter)
 MATERIAL_DICT = {'diffuse': (Materials.Diffuse, None),
                  'emissive': (Materials.Emissive, 'intensity'),
                  'no_texture': (Materials.NoTexture, None),
@@ -14,7 +16,12 @@ MATERIAL_DICT = {'diffuse': (Materials.Diffuse, None),
                  'transmissive': (Materials.Transmissive, 'refraction_index')}
 
 
-def render_config(path: str):
+def render_config(path: str) -> None:
+    """
+    Reads in config file, creates scene from it, renders it and saves resulting image
+
+    :param path: Path of the config file
+    """
     with open(path) as config_file:
         config = json.load(config_file)
 
@@ -77,7 +84,10 @@ def render_config(path: str):
                      saving_config['gamma_correct'])
 
 
-def main():
+def main() -> None:
+    """
+    Manages user interaction and reads in the path of the config file(s)
+    """
     path = input("Please enter path of config file or 'all' for all files in config directory: ")
     if path.lower() == 'all':
         for path in os.listdir("configs/"):

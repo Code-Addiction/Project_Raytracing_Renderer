@@ -12,10 +12,23 @@ from multiprocessing import RawArray as Array
 
 
 class Camera:
+    """
+    Camera for defining point of view and handling of the rendering
+
+    :param look_from: Position of the camera
+    :param look_at: Where the camera should look at
+    :param up: Orientation of the camera
+    :param vfov: Vertical angle of the camera's field of view
+    :param focal_length: Distance from camera to canvas (on which the image shall be projected)
+    :param aspect_ratio: Aspect ratio of the resulting image
+    :param viewport_height: Height of the canvas
+    :param samples_per_pixel: Number of rays used per pixel
+    :param time_interval: Tuple of virtual start and end time of rendering or None if no motion should be capture (default: None)
+    """
     def __init__(self, look_from: Vector, look_at: Vector, up: Vector,
                  vfov: float, focal_length: float,
                  aspect_ratio: float, viewport_height: float,
-                 samples_per_pixel: int, time_interval: tuple[float, float] | None = None) -> None:
+                 samples_per_pixel: int, time_interval: tuple[float, float] | None = None):
         self.focal_length = focal_length
         self.aspect_ratio = aspect_ratio
         self.viewport_height = viewport_height * math.tan(math.radians(vfov) / 2)
@@ -32,6 +45,15 @@ class Camera:
         self.time_interval = time_interval
 
     def render(self, width: int, render_depth: int, world: World, background: Vector | None = None) -> Image:
+        """
+        Renders the scene
+
+        :param width: Width of the resulting image
+        :param render_depth: Render depth
+        :param world: World instance containing all objects
+        :param background: Color of background or None (default: None)
+        :return: Rendered image
+        """
         height = int(width // self.aspect_ratio)
         image = Image(width, height)
         for j in range(height)[::-1]:
@@ -54,6 +76,17 @@ class Camera:
     def render_parallel(self, width: int, render_depth: int, world: World,
                         height_start: int, height_end: int, output_array: Array,
                         background: Vector | None = None) -> None:
+        """
+        Renders a section of the scene
+
+        :param width: Width of the resulting image
+        :param render_depth: Render depth
+        :param world: World instance containing all objects
+        :param height_start: Row to start rendering (inclusive)
+        :param height_end: Row to stop rendering (exclusive)
+        :param output_array: Array of the whole image to save results in
+        :param background: Color of background or None (default: None)
+        """
         height = int(width // self.aspect_ratio)
         for j in range(height_start, height_end)[::-1]:
             index = j * width * 3
@@ -77,6 +110,13 @@ class Camera:
                 index = index + 3
 
     def get_ray(self, s: float, t: float) -> Ray:
+        """
+        Calculates ray from camera to pixel defined by s and t
+
+        :param s: Relative width position of the pixel, normalized to image width (between 0 and 1)
+        :param t: Relative height position of the pixel, normalized to image height (between 0 and 1)
+        :return: Ray from camera through pixel
+        """
         if self.time_interval is not None:
             time0, time1 = self.time_interval
             return Ray(self.origin, self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin,
@@ -85,6 +125,15 @@ class Camera:
 
     @staticmethod
     def get_color(ray: Ray, world: World, max_depth: int, background: Vector | None = None) -> Vector:
+        """
+        Computes the color of the given ray
+
+        :param ray: Ray to compute color of
+        :param world: World instance containing all objects
+        :param max_depth: Render depth
+        :param background: Color of background or None (default: None)
+        :return: Color of the ray
+        """
         if max_depth < 1:
             return Vector(0, 0, 0)
 

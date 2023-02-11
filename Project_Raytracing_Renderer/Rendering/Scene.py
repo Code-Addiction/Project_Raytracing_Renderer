@@ -10,16 +10,37 @@ import multiprocessing as mp
 
 
 class Scene:
-    def __init__(self, camera: Camera, background: Vector | None = None) -> None:
+    """
+    Interface to interact with the scene with
+
+    :param camera: Camera for rendering
+    :param background: Color of background or None (default: None)
+    """
+    def __init__(self, camera: Camera, background: Vector | None = None):
         self.camera = camera
         self.world = World()
         self.background = background
 
     def add(self, sphere: Sphere | list) -> Scene:
+        """
+        Add sphere or spheres to scene
+
+        :param sphere: Sphere or list of spheres to add
+        :return: The updated scene
+        """
         self.world.add(sphere)
         return self
 
     def render(self, width: int, render_depth: int, in_parallel: bool = True, number_cores: int = 0) -> Image:
+        """
+        Render the scene
+
+        :param width: Width of the resulting image
+        :param render_depth: Render depth
+        :param in_parallel: If the rendering should be done in parallel (default: True)
+        :param number_cores: Number of cores to render on, 0 means max available number of cores (default: 0)
+        :return: Rendered image
+        """
         if not in_parallel:
             return self.camera.render(width, render_depth, self.world, self.background)
 

@@ -7,12 +7,26 @@ import random
 
 
 class Specular(Material):
+    """
+        Representation of specular materials
+
+        :param color: Color of the material
+        :param fuzz: Factor how clear the reflection should be (default: 0)
+        """
     def __init__(self, color: Vector, fuzz: float = 0):
         super().__init__(color)
         self.fuzz = fuzz
 
     def scatter(self, ray: Ray, intersection_point: Vector,
                 normal_vector: Vector) -> tuple[Ray, Vector] | None:
+        """
+        Calculates how a ray is reflected
+
+        :param ray: Ray that hits the object
+        :param intersection_point: Point where the ray hits the object
+        :param normal_vector: Normal vector at the point of intersection
+        :return: Either the reflected ray and the material's color or None if no ray is reflected
+        """
         reflected = Material.reflect(ray.direction.normalize(), normal_vector)
 
         if self.fuzz > 0:

@@ -6,7 +6,15 @@ from multiprocessing import Array
 
 
 class Image:
-    def __init__(self, width: int, height: int, color: Vector = Vector(0, 0, 0), array: Array | None = None) -> None:
+    """
+    Representation of a rendered image
+
+    :param width: Width of the image
+    :param height: Height of the image
+    :param color: Color to initialise the image with (default: black)
+    :param array: Array representation of the image or None (default: None)
+    """
+    def __init__(self, width: int, height: int, color: Vector = Vector(0, 0, 0), array: Array | None = None):
         self._height = height
         self._width = width
         if array is not None:
@@ -21,7 +29,13 @@ class Image:
                     row.append(color)
                 self._matrix.append(row)
 
-    def save_image(self, path: str, gamma_correct: bool = False):
+    def save_image(self, path: str, gamma_correct: bool = False) -> None:
+        """
+        Saves the image
+
+        :param path: Path to save image to
+        :param gamma_correct: If image should be gamma corrected before saving (default: False)
+        """
         image_str = f'P3\n{self._width} {self._height}\n255'
 
         # To optimize the performance, the if clauses are put on the outside of the loop
@@ -59,6 +73,13 @@ class Image:
             f.write(image_str)
 
     def update(self, i: int, j: int, color: Vector) -> None:
+        """
+        Updates color of a pixel
+
+        :param i: Width index of pixel
+        :param j: Height index of pixel
+        :param color: Color to write to image
+        """
         if self._array is not None:
             index = (i * self._width + j) * 3
             self._array[index] = color.x
@@ -68,6 +89,11 @@ class Image:
             self._matrix[i][j] = color
 
     def __str__(self) -> str:
+        """
+        Converts image to string for printing
+
+        :return: String representation of image
+        """
         if self._array is not None:
             return str(self._array)
         else:
