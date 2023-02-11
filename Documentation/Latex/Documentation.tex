@@ -258,14 +258,80 @@ So far all light is emitted by the background. To make objects emit light, a new
 \end{figure}
 
 \chapter{Positioning and orienting camera}
-jhfjgjkfgjfghjjfg
+So far the camera has always been positioned at (0, 0, 0) and looked along the z-axis in the negative direction. This is to be changed so that the camera can be positioned everywhere in the scene and can look in every direction. With this it would be possible to create different images with different point of views from the same scene instead of always having to create an own scene for every image. For that the \textit{Camera} now gets three vectors defining its position:
+\begin{itemize}
+\item From: Position of the camera
+\item At: Where the camera should look at
+\item Up: Which way is up, this is used to define the rotation of the camera
+\end{itemize}
+Using these three parameters, all positions and orientations of the camera are possible. The property definitions of the camera have to be changed to use these three vectors. All changed property definitions are shown in source code \ref{lst:step9}.
+\begin{lstlisting}[caption={Updated camera properties}, label=lst:step9, style=mystyle]
+self.origin = look_from
+self.w = (look_from - look_at).normalize()
+self.u = Vector.cross_product(up, self.w).normalize()
+self.v = Vector.cross_product(self.w, self.u)
+self.horizontal = self.u * self.viewport_width
+self.vertical = self.v * self.viewport_height
+self.lower_left_corner = (self.origin - self.horizontal / 2 - self.vertical / 2 - self.w)
+\end{lstlisting}
+An example of different images of the same scene just with different camera positions and orientations can be seen in figure \ref{fig:step9}.
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step9_position1}
+\caption{From: (0, 1.5, 0.5)\\At: (0, 0, -1.5)\\Up: (0, 1, 0)}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step9_position2}
+\caption{From: (2, 1.5, -1.5)\\At: (0, 0, -2.5)\\Up: (0, 1, 0)}
+\end{subfigure}
+\vskip\baselineskip
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step9_position3}
+\caption{From: (-2, 1.5, -1.5)\\At: (0, 0, -2.5)\\Up: (0, 1, 0)}
+\end{subfigure}
+\hfill
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step9_position4}
+\caption{From: (0, 3.5, -5)\\At: (0, 0, -1.5)\\Up: (0, 1, 0)}
+\end{subfigure}
+\vskip\baselineskip
+\begin{subfigure}[h!]{0.475\textwidth}
+\centering
+\includegraphics[width=\textwidth]{step9_position5}
+\caption{From: (0, 3.5, -3.49)\\At: (0, 0, -3.5)\\Up: (1, 0, 0)}
+\end{subfigure}
+\caption{Same scene with different camera positions}
+\label{fig:step9}
+\end{figure}
 
 \chapter{Animation}
-jhfjgjkfgjfghjjfg
+All objects in a scene have been static so far, meaning they do not have any movement. To add movement to a scene, the project has to be extended by the concept of time. This means, that the camera and (moving) objects need a time parameter. For the camera this is simply a start time of the image generation and an end time. All rays that are sent out during the rendering process from the camera then simply get a random time of existence in this time interval. For that to be possible, rays also need a time property. This means, that every ray has a time of existence. This time then can be used to get the scene at that moment in time. The spheres not only need a time, but they also need information about their movement. Therefore, \textit{Sphere} objects can now accept a destination, start time of their movement and a time when they reach their destination. The movement of the spheres is assumed to be linear and starting at its origin at the start time going to the destination where they arrive at the end time. It is furthermore assumed, that after the end time and before the start time the sphere moves in the same way as in that interval and thus the position can easily be computed by a linear equation. The implementation of this is shown in source code \ref{lst:move}.
+\begin{lstlisting}[caption={Computing position of sphere}, label=lst:move, style=mystyle]
+def move(self, time: float | None) -> Vector:
+    if self.movement is None or time is None:
+        return self.origin
+        
+    target, time0, time1 = self.movement
+    return self.origin + (target - self.origin) * ((time - time0) / (time1 - time0))
+\end{lstlisting}
+This now has to be used as the position of a sphere when testing if a ray hits the sphere. As with previous extensions of the project, it is important to still be able to reproduce previous images. To achieve this, the time and movement information is made optional and if a sphere does not have movement, the function simply returns its origin. The same goes for the camera and rays, for both a time component is optional. Because now a moving object is represented by a static image, motion blur occurs. This simply means, that the object seems to be at multiply positions at the same time. This can be seen in figure \ref{fig:step10}, where one of the ''stars'' in the background now has movement as well as the glass ball in the foreground and the green sphere.
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{step10}
+\centering
+\caption{Motion blur caused by moving objects}
+\label{fig:step10}
+\end{figure}
 
 \chapter{Render parallelization}
 jhfjgjkfgjfghjjfg
 
 \chapter{Config files}
 jhfjgjkfgjfghjjfg
+
 \end{document}
