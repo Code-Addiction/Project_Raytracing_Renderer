@@ -329,7 +329,39 @@ This now has to be used as the position of a sphere when testing if a ray hits t
 \end{figure}
 
 \chapter{Render parallelization}
-jhfjgjkfgjfghjjfg
+The rendering process with a higher image quality takes quite a long time. To make the rendering faster, it shall be run in parallel on multiple cores on the CPU. Because the computation of the color of a pixel is independent of the color of other pixels, the image can simply be split into multiple smaller images. Every of these image parts can then be rendered independently and on multiple cores. It is chosen to split the image horizontal into as many stripes as cores should be used. This is done because the spheres should be more equally distributed over the cores this way and the spheres are what take most of the computation time. To render only a specific area of rows instead of the whole image, a new render function is added to the \textit{Camera}. This takes the additional information at which row it should start and till which row it should render. Because it is not that easily possible to return an \textit{Image} object from a different core to the ''main'' process, a different way of saving the results has to be chosen. The simplest and memory efficient form is using an array. This can be created for the whole image and shared between all processes and cores and thus the smaller parts do not have to be assembled at the end. Every process just writes into the part it renders and because of that an array without access control can be used, which (slightly) improves the performance. Hence, the rendering function additionally takes also the array for its results. For a better parameter handling, a class for the processes is created (\textit{RenderingProcess}), which takes all for the rendering required parameters and starts a new process on a different core for rendering an image part. Additionally, the render method of the \textit{Scene} has also to be adopted to use the new parallelized rendering process. This is shown in source code \ref{lst:parallel}. Because the results are an array, they have to be converted to an \textit{Image} object. To optimize this, the \textit{Image} is changed to accept an array as input and then use this array as the internal representation of the image, using it for all functions. This removes the necessity to iterate through the whole array just to convert it into a two-dimensional list. After converting the result into an image, the same interface for the parallelized and serial rendering process are created. This means, that they can be used interchangeably depending on the current requirements.
+\newpage
+\begin{lstlisting}[caption={Parallelizing the rendering process}, label=lst:parallel, style=mystyle]
+def render(self, width: int, render_depth: int, in_parallel: bool = True, number_cores: int = 0) -> Image:
+    if not in_parallel:
+        return self.camera.render(width, render_depth, self.world, self.background)
+
+    max_cores = mp.cpu_count()
+    if not 0 < number_cores <= max_cores:
+        number_cores = max_cores
+
+    processes = []
+    
+    height = int(width // self.camera.aspect_ratio)
+    rows_per_process = int(height // number_cores)
+    
+    results = mp.RawArray('B', height * width * 3)
+    
+    for i in range(number_cores - 1):
+        process = RenderingProcess(width, render_depth, self.world, i * rows_per_process, (i + 1) * rows_per_process, self.camera, results, self.background)
+        processes.append(process)
+        process.start()
+
+    height_start = (number_cores - 1) * rows_per_process
+    self.camera.render_parallel(width, render_depth, self.world, height_start, height, results, self.background)
+    
+    for process in processes:
+       process.join()
+
+    return Image(width, height, array=results)
+\end{lstlisting}
+\newpage
+\noindent \textbf{Explain results with graph of the execution time with different number of cores}
 
 \chapter{Config files}
 jhfjgjkfgjfghjjfg
