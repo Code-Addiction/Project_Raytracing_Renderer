@@ -53,6 +53,40 @@
   {ö}{{\"o}}1
 } 
 
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
 \begin{document}
 \pagenumbering{gobble}
 \vspace*{2cm}
@@ -361,9 +395,53 @@ def render(self, width: int, render_depth: int, in_parallel: bool = True, number
     return Image(width, height, array=results)
 \end{lstlisting}
 \newpage
-\noindent \textbf{Explain results with graph of the execution time with different number of cores}
+\noindent \textbf{Explain results with graph of the execution time with different number of cores}\\Rerun step 8 with 16 rays
 
 \chapter{Config files}
-jhfjgjkfgjfghjjfg
+To not always having to change the code and render multiple images automatically, config files should be used. These config files are used as a description of the scene and the parameters needed for rendering. A config file then needs to be converted into a scene that can be rendered. The creation of a scene from a config file is done by the script \textit{run}. It takes the path to a config file, creates a scene from it and renders the scene using the parameters also from the config file. As format of the config files JSON is chosen, because it has an easy and simple syntax and can easily be read by a Python library. JSON uses simply data-structures similar to Python such as dictionaries or lists. This makes accessing data from a JSON file in Python effortless. An example of a config file is shown in source code \ref{lst:config}.
+\begin{lstlisting}[caption={Config file example}, label=lst:config, language=json]
+{"background": [0, 0, 0],
+"camera": {
+	"look_from": [0, 0, 0],
+	"look_at": [0, 0, -1],
+	"up": [0, 1, 0],
+	"vfov": 90,
+	"focal_length": 1,
+	"aspect_ratio": 1.7777777777777777777777777777777777777777777777777777777777777777777777777777777777777777778,
+	"viewport_height": 2,
+	"samples_per_pixel": 32
+	},
+"rendering": {
+	"width": 1080,
+	"render_depth": 32,
+	"in_parallel": true,
+	"number_cores" : 0
+	},
+"saving": {
+	"path": "results/test.ppm",
+	"gamma_correct": true
+	},
+"spheres": [{
+	"origin": [-2, 1, -4],
+	"radius": 2,
+	"material": {
+			"type": "emissive",
+			"color": [100, 150, 200],
+			"intensity": 0.75
+			},
+	"movement": [[-3, 1, -2], 0, 1]
+	},
+	{
+	"origin": [-2, 1, -2],
+	"radius": 1,
+	"material": {
+			"type": "transmissive",
+			"color": [255, 255, 255],
+			"refraction_index": 1.5
+			},
+	"movement": [[-3, 1, -2], 0, 1]
+	}]
+}
+\end{lstlisting}
 
 \end{document}
