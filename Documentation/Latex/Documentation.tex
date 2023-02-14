@@ -395,7 +395,20 @@ def render(self, width: int, render_depth: int, in_parallel: bool = True, number
     return Image(width, height, array=results)
 \end{lstlisting}
 \newpage
-\noindent \textbf{Explain results with graph of the execution time with different number of cores}\\Rerun step 8 with 16 rays
+\noindent To see if the parallelization achieved significant improvements, a comparison of the rendering time is done. For that, the same scene is rendered multiple times using a different number of cores. The results of that comparison is shown in figure \ref{fig:efficiency}.
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{parallelization_efficiency}
+\centering
+\caption{Comparison of parallelization efficiency with a different number of cores}
+\label{fig:efficiency}
+\end{figure} \\
+From the graph can be seen, that the more cores are used for the rendering the faster the rendering is done. The speedup (figure \ref{fig:speedup}) shows, that by using the parallelization a big improvement is achieved. Using 12 cores, the rendering is almost four times as fast. By using the parallelization, an image can be rendered with a for times higher resolution in the same time (e.g. 4K can be rendered on 12 cores in the same time as a Full HD image on one core). An even better speedup will most likely be achieved using more cores. Because most CPUs only have a strongly limited number of cores, using an GPU for the parallelization would yield even better results. This would be an interesting next step for the further development of the parallelization.
+\begin{figure}[h!]
+\includegraphics[width=\textwidth]{parallelization_speedup}
+\centering
+\caption{Achieved speedup by rendering parallelization}
+\label{fig:speedup}
+\end{figure}
 
 \chapter{Config files}
 To not always having to change the code and render multiple images automatically, config files should be used. These config files are used as a description of the scene and the parameters needed for rendering. A config file then needs to be converted into a scene that can be rendered. The creation of a scene from a config file is done by the script \textit{run}. It takes the path to a config file, creates a scene from it and renders the scene using the parameters also from the config file. As format of the config files JSON is chosen, because it has an easy and simple syntax and can easily be read by a Python library. JSON uses simply data-structures similar to Python such as dictionaries or lists. This makes accessing data from a JSON file in Python effortless. An example of a config file is shown in source code \ref{lst:config}.
