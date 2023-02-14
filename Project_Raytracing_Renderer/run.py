@@ -88,10 +88,10 @@ def main() -> None:
     """
     Manages user interaction and reads in the path of the config file(s)
     """
-    path = input("Please enter path of config file or 'all' for all files in config directory: ")
+    path = input("Please enter path of config file or 'all' for all files in config directory (except manuals): ")
     if path.lower() == 'all':
         for path in os.listdir("configs/"):
-            if path == 'example.json':
+            if path == 'manuals':
                 continue
             render_config("configs/" + path)
     else:
