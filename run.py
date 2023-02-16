@@ -91,7 +91,8 @@ def main() -> None:
     """
     Manages user interaction and reads in the path of the config file(s)
     """
-    path = input("Please enter path of config file or 'all' for all files in config directory (except manuals): ")
+    path = input("Please enter path of config file or 'all' for all files in 'configs' directory except "
+                 "subfolder 'manuals' (e.g. Project_Raytracing_Renderer/configs/step5_depth2.json): ")
     if path.lower() == 'all':
         for path in os.listdir("Project_Raytracing_Renderer/configs/"):
             if path == 'manuals':
