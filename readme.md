@@ -1,1 +1,1 @@
-To render a scene, execute the 'run.py' file. This will ask for a config file. Either use one of the existing in the 'configs' directory or define a new and run it. For help with creating a new config file, look at the existing ones or contact me at t.salisch@t-online.de
+To render a scene, execute the 'run.py' file. This will ask for a config file. Either use one of the existing in the 'configs' directory or define a new and run it. For help with creating a new config file, look at the existing ones or contact me, I will happily help with any problems.
