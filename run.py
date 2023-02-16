@@ -7,6 +7,7 @@ from Project_Raytracing_Renderer.Rendering.Image import Image
 from Project_Raytracing_Renderer import Materials
 import os
 import json
+from pathlib import Path
 
 # Conversion from JSON material to Python material class (with additional parameter)
 MATERIAL_DICT = {'diffuse': (Materials.Diffuse, None),
@@ -24,7 +25,6 @@ def render_config(path: str) -> None:
     """
     with open(path) as config_file:
         config = json.load(config_file)
-
     image_config = config.get('image')
     if image_config is not None:
         image = Image(image_config['width'],
@@ -80,6 +80,9 @@ def render_config(path: str) -> None:
                              rendering_config.get('number_cores', 0))
 
     saving_config = config['saving']
+    parent_path_absolut = Path(saving_config['path']).parent.absolute()
+    if not os.path.exists(parent_path_absolut):
+        os.mkdir(parent_path_absolut)
     image.save_image(saving_config['path'],
                      saving_config['gamma_correct'])
 
@@ -90,10 +93,10 @@ def main() -> None:
     """
     path = input("Please enter path of config file or 'all' for all files in config directory (except manuals): ")
     if path.lower() == 'all':
-        for path in os.listdir("configs/"):
+        for path in os.listdir("Project_Raytracing_Renderer/configs/"):
             if path == 'manuals':
                 continue
-            render_config("configs/" + path)
+            render_config("Project_Raytracing_Renderer/configs/" + path)
     else:
         render_config(path)
 
